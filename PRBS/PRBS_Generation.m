@@ -1,0 +1,44 @@
+%% Generate the identification signals
+close all
+clear all
+
+u_id = PRBS(10,2^10-1,0,-0.1);
+u_id = [u_id;PRBS(9,2^9-1,0,-0.1)];
+
+t = (0:0.01:0.01*(length(u_id)-1))';
+u_id = [t u_id];
+plot(u_id(:,1),u_id(:,2));
+
+
+function [u_scaled] = PRBS(m,N,b,c)
+a = zeros(m,1);
+x = ones(1,m);
+switch (m)
+    case 3
+        a(1) = 1; a(3)=1;
+    case 4
+        a(1) = 1; a(4)=1;
+    case 5
+        a(2) = 1; a(5)=1;
+    case 6
+        a(1) = 1; a(6)=1;
+    case 7
+        a(1) = 1; a(7)=1;
+    case 8
+        a(1) = 1; a(2)=1;a(7) = 1; a(8)=1;
+    case 9
+        a(4) = 1; a(9)=1;
+    case 10
+        a(3) = 1; a(10)=1;
+end
+
+for k=1:N
+    u(k,1) = x(k,m);
+    u_scaled(k,1) = b + (c-b)*u(k,1);
+    x(k+1,1) = mod(x(k,:)*a,2);
+    
+    for i=2:m
+        x(k+1,i)=x(k,i-1);
+    end
+end
+end
